@@ -1,0 +1,20 @@
+{
+  "apps": [
+    {
+      "name": "login-server",
+      "script": "src/app.js",
+      "log_date_format": "YYYY-MM-DD HH:mm Z",
+      "error_file": "logs/error.log",
+      "out_file": "logs/out.log",
+      "merge_logs": true,
+      "env": {
+        "NODE_ENV": "development",
+        "port": 28000
+      },
+      "env_production": {
+        "NODE_ENV": "production",
+        "port": 3000
+      }
+    }
+  ]
+}
