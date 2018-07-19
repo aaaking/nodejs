@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+var path = require('path')
+var mime = require('mime')
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -10,7 +12,7 @@ router.all('/list', function (req, rep, next) {
     console.log(req.method)//GET
     console.log(req.baseUrl)// /users
     console.log(req.path)// /list
-
+    console.log(process.env.PATH);//
     //获取某个请求头
     console.log(req.headers['user-agent'])//
     console.log(req.get('user-agent'))//same as above
@@ -23,7 +25,7 @@ router.all('/list', function (req, rep, next) {
     console.log(req.body)// ?后面的json对象
     console.log(req.body.id)
     // rep.writeHead(200, {'Content-Type': 'text/plain; charset=utf-8'});
-    rep.setHeader("Content-Type", "text/plain; charset=utf-8")
+    // rep.setHeader("Content-Type", mime.lookup(path.basename(filePath)) + ";charset=utf-8")
     rep.send("<h1>hello</h1>hello")
 })
 
