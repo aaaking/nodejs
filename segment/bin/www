@@ -89,3 +89,65 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+
+let Promise = require('promise')
+function testPromisify(cmd) {
+  return new Promise(function (resolve, reject) {
+    resolve({ "data": cmd })
+  })
+}
+function doIt(cmd, callback) {
+  //  Promise.reject('hash getTransactionReceipt err')
+  testPromisify(cmd)
+    .then(data => {
+      console.log('this data: ', data)
+      callback(null, data)
+      // return data
+    })
+    // .then(d => {
+    //   callback(null, d)
+    // })
+    .catch(err => {
+      callback(err, null)
+    })
+}
+const { promisify } = require('util');
+// const stat = util.promisify(testPromisify);
+async function ttt() {
+  // return Promise.reject('hash getTransactionReceipt err')
+  var sss = await promisify(doIt).bind(doIt)('./1.jpg')
+  console.log('---------------sss', sss)
+  var sss2 = await promisify(doIt).bind(doIt)('./2.jpg')
+  console.log('---------------sss2', sss2)
+  // return sss2
+  if (!sss) {
+    return Promise.reject('hash getTransactionReceipt err')
+  }
+  // sss.then()
+  //     .catch(async function (err) {
+  //         console.log('---------------sss')
+  //         var sss2 = await stat('./1.jpg')
+  //         console.log('---------------222')
+  //     })
+  // if (sss2) {
+  //     console.log('succes-------------', sss2)
+  // } else {
+  //     console.log('fail-------------', sss2)
+  // }
+  // return Promise.reject('hash getTransactionReceipt err')
+}
+ttt()
+  .then(data => {
+    console.log('succes-------------', data)
+  })
+  .catch(err => {
+    console.log('fail-=-------------------', err)
+  })
+// stat('.')
+//     .then((stats) => {
+//         // Do something with `stats`
+//     })
+//     .catch((error) => {
+//         // Handle the error.
+//     });
