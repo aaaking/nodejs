@@ -52,6 +52,7 @@ server.on('request', function (req, res) {
     //         res.end(result, 'binary')
     //     }
     // })
+    console.log('request')
 })
 
 server.listen(8081)

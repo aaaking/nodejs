@@ -1,0 +1,1 @@
+nohup node test.js 1>>./output/test.log 2>>./output/test-error.log &
