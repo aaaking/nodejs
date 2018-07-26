@@ -19,3 +19,17 @@ http.createServer(function (req, rep) {
     }
 }).listen(8000)
 console.log("server running on port 8000...")
+// require('url').parse("http://localhost:3000/1?key=234&pwd=we")
+// Url {
+//     protocol: 'http:',
+//         slashes: true,
+//         auth: null,
+//         host: 'localhost:3000',
+//         port: '3000',
+//         hostname: 'localhost',
+//         hash: null,
+//         search: '?key=234&pwd=we',
+//         query: 'key=234&pwd=we',
+//         pathname: '/1',
+//         path: '/1?key=234&pwd=we',
+//         href: 'http://localhost:3000/1?key=234&pwd=we' }

@@ -19,6 +19,12 @@ var http = require('http')
 var https = require('https')
 var fs = require('fs')
 var path = require('path')
+var url = require('url')
+var parse = url.parse
+var join = require('path').join
+var qs = require('querystring')
+var formidable = require('formidable')
+var items = []
 
 // var Web3 = require('web3');
 
@@ -40,7 +46,6 @@ server.on('request', function (req, res) {
     // fs.writeFile("./writeFile.txt", "1")
     res.setHeader("Content-Type", "text/html; charset=utf-8")
     // response.setHeader("powered by", "zhouzhihui")
-    res.writeHead(200, { 'Content-Type': 'image/jpeg;        charset=utf-8' });
     if (req.url == "/favicon.ico") {
         return
     }
@@ -69,7 +74,101 @@ server.on('request', function (req, res) {
     //         res.end(result, 'binary')
     //     }
     // })
-    console.log('request')
+    var method = req.method// + "wfafwef"
+    console.log("__dirname: " + __dirname)
+    var urlObj = parse(req.url)
+    console.log(qs.parse(urlObj.query))//+号会变成空格
+    if (urlObj.pathname == '/1.jpg') {
+        var filePath = join(__dirname, urlObj.pathname)
+        fs.stat(filePath, function (err, stat) {//检查文件是否存在
+            if (err) {
+                if (err.code == 'ENOENT') {
+                    res.statusCode = 404
+                    res.end('Not found')
+                } else {
+                    res.statusCode = 500
+                    res.end("internal server error")
+                }
+            } else {
+                res.writeHead(200, {'Content-Type': 'image/jpeg;        charset=utf-8'});
+                var data = ""
+                var stream = fs.createReadStream(filePath)
+                // req.pipe(stream)
+                stream.pipe(res)
+                // process.stdout.write('stdout');
+                // stream.on('data', function (chunk) {
+                //     data += chunk
+                // })
+                // stream.on('end', function () {
+                //     console.log('read data finish', data)
+                //     res.end(data)
+                // })
+                stream.on('error', function (err) {
+                    res.statusCode = 500
+                    res.end('internal server error')
+                })
+                // fs.readFile('./1.jpg', 'binary', function (err, result) {
+                //     if (err) {
+                //         res.end(err)
+                //     } else {
+                //         res.end(result, 'binary')
+                //     }
+                // })
+            }
+        })
+        return
+    }
+    if (urlObj.pathname == '/4.8') {
+        switch (method) {
+            case "GET":
+                show(req, res)
+                break;
+            case "POST":
+                upload(req, res)
+                break;
+        }
+        return
+    }
+    switch (method) {
+        case 'POST':
+            //chunk 默认是Node版的字节数组，而对于文本格式的待办事项而言，并不需要二进制数据，最好将流编码设定为ascii或utf8，这样data事件就会给出字符串
+            req.setEncoding('utf8')
+            var post = ''
+            req.on('data', function (chunk) {
+                post += chunk
+            })
+            req.on('end', function () {
+                res.write(post)
+                items.push(post)
+                res.end('\n')
+            })
+            break;
+        case 'GET':
+            var body = items.map(function (item, i) {
+                return i + ') ' + item
+            }).join('\n')
+            // res.setHeader('Content-Length', Buffer.byteLength(body))
+            res.setHeader('Content-Type', 'text/plain; charset="utf-8"')
+            res.write(body)
+            res.end('end\n')
+            break;
+        case 'DELETE':
+            var path = url.parse(req.url).pathname
+            var i = parseInt(path.slice(1), 10)
+            if (isNaN(i)) {
+                res.statusCode = 400
+                res.end('Invalid item id\n')
+            } else if (!items[i]) {
+                res.statusCode = 404
+                res.end('Item not found\n')
+                console.log('Item not found\n')
+            } else {
+                items.splice(i, 1)
+                res.end('OK\n')
+                console.log('OK')
+            }
+            break;
+    }
 })
 
 server.listen(8081)
@@ -140,3 +239,48 @@ var aF = function () {
 console.log("aaa", "bbbb")
 console.log({"aaa":"aaav"}, "sfedf", {"xxx":"xxv"})
 console.log(aF)
+console.log("server ruinning on  __dirname: %s", __dirname)
+
+function show(req, res) {
+    var html = '' +
+        '<form method = "post" action="/" enctype="multipart/form-data" action="./4.8">' +
+        '<p><input type="text" name="name"></p>' +
+        '<p><input type="file" name="file"></p>' +
+        '<p><input type="submit" value="Upload"></p>' +
+        '</form>'
+    res.setHeader("Content-Type", "text/html")
+    res.setHeader("Content-Length", Buffer.byteLength(html))
+    res.end(html)
+}
+
+function upload(req, res) {
+    if (!isFormData(req)) {
+        res.statusCode = 404
+        res.end('bad request: excepting multipart/form-data')
+        return
+    }
+    var form = new formidable.IncomingForm()
+    form.parse(req)
+    form.on('field', function (field, value) {//收完输入域后发出的事件
+        console.log('on field')
+        console.log(field)
+        console.log(value)
+    })
+    form.on('file', function (name, file) {//接收到文件并处理好发出的事件
+        console.log('on file')
+        console.log(name)
+        console.log(file)
+    })
+    form.on('progress', function (received, total) {
+        var percent = Math.floor(received / total * 100)
+        console.log(percent)
+    })
+    form.on('end', function () {
+        res.end('upload complete')
+    })
+}
+
+function isFormData(req) {
+    var type = req.headers['content-type'] || ''
+    return type.indexOf("multipart/form-data") == 0
+}
