@@ -102,7 +102,7 @@ function doIt(cmd, callback) {
   testPromisify(cmd)
     .then(data => {
       console.log('this data: ', data)
-      callback(null, data)
+      // callback(null, data)
       // return data
     })
     // .then(d => {
@@ -137,13 +137,13 @@ async function ttt() {
   // }
   // return Promise.reject('hash getTransactionReceipt err')
 }
-ttt()
-  .then(data => {
-    console.log('succes-------------', data)
-  })
-  .catch(err => {
-    console.log('fail-=-------------------', err)
-  })
+// ttt()
+//   .then(data => {
+//     console.log('succes-------------', data)
+//   })
+//   .catch(err => {
+//     console.log('fail-=-------------------', err)
+//   })
 // stat('.')
 //     .then((stats) => {
 //         // Do something with `stats`
@@ -151,3 +151,37 @@ ttt()
 //     .catch((error) => {
 //         // Handle the error.
 //     });
+
+// var promiseObj = new Promise((resolve, reject) => { // 构建一个 Promise 实例
+//   resolve({ "a": "aV" })
+// })
+// promiseObj.then(data => {
+//   console.log(data)
+// }).catch(err => {
+
+// })
+
+function paramObj(params, callback) {//假设业务需求这个函数需要传入一个对象参数params才是正常的，否则就表示异常
+  console.log('params', params)
+  console.log('callback', callback)
+  // if (typeof params != 'object') {
+  //   params(JSON.stringify({ "code": "1", "msg": "params null" }), null)//抛出异常，原因是params null
+  // } else {
+  //   callback(null, params)//promisify会添加一个自己风格的类型为function的参数
+  // }
+}
+
+async function test() {
+  var data = await promisify(paramObj).bind(paramObj)(function (err, data) {
+
+  })//不传入一个对象的参数的话会抛出异常
+  console.log('inner data: ', data)
+  return data
+}
+test()
+  .then(data => {
+    console.log('outer data:', data)
+  })
+  .catch(err => {
+    console.log('outer err:', err)
+  })
