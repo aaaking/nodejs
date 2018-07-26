@@ -1,3 +1,16 @@
+var getStackTrace = function () {
+    var obj = {};
+    Error.captureStackTrace(obj, getStackTrace);
+    return obj.stack;
+};
+var log = console.log;
+console.log = function() {
+    var stack = getStackTrace()
+    var line = stack.match(/\(.*?\)/g)[1]
+    arguments[0] = arguments[0] + '-------' + line.replace("(", "").replace(")", "")
+    log.apply(console, arguments)
+};
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
