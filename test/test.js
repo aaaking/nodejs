@@ -1,3 +1,20 @@
+var getStackTrace = function () {
+    var obj = {};
+    Error.captureStackTrace(obj, getStackTrace);
+    return obj.stack;
+};
+var log = console.log;
+console.log = function () {
+    var stack = getStackTrace() || ""
+    var line = stack.match(/\(.*?\)/g)[1] || ""
+    for (var i in arguments) {
+    }
+    if (typeof arguments[i] == 'object') {
+        arguments[i] = JSON.stringify(arguments[i])
+    }
+    arguments[i] += '----' + line.replace("(", "").replace(")", "")
+    log.apply(console, arguments)
+};
 var http = require('http')
 var https = require('https')
 var fs = require('fs')
@@ -117,15 +134,9 @@ function listTasks(file) {
     })
 }
 
-var getStackTrace = function () {
-    var obj = {};
-    Error.captureStackTrace(obj, getStackTrace);
-    return obj.stack;
-};
-var log = console.log;
-console.log = function() {
-    var stack = getStackTrace()
-    var line = stack.match(/\(.*?\)/g)[1]
-    arguments[0] = arguments[0] + '-------' + line.replace("(", "").replace(")", "")
-    log.apply(console, arguments)
-};
+var aF = function () {
+    return "affff"
+}
+console.log("aaa", "bbbb")
+console.log({"aaa":"aaav"}, "sfedf", {"xxx":"xxv"})
+console.log(aF)
