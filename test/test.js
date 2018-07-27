@@ -23,7 +23,7 @@ var url = require('url')
 var parse = url.parse
 var join = require('path').join
 var qs = require('querystring')
-var formidable = require('formidable')
+// var formidable = require('formidable')
 var items = []
 
 // var Web3 = require('web3');
@@ -90,7 +90,7 @@ server.on('request', function (req, res) {
                     res.end("internal server error")
                 }
             } else {
-                res.writeHead(200, {'Content-Type': 'image/jpeg;        charset=utf-8'});
+                res.writeHead(200, { 'Content-Type': 'image/jpeg;        charset=utf-8' });
                 var data = ""
                 var stream = fs.createReadStream(filePath)
                 // req.pipe(stream)
@@ -237,7 +237,7 @@ var aF = function () {
     return "affff"
 }
 console.log("aaa", "bbbb")
-console.log({"aaa":"aaav"}, "sfedf", {"xxx":"xxv"})
+console.log({ "aaa": "aaav" }, "sfedf", { "xxx": "xxv" })
 console.log(aF)
 console.log("server ruinning on  __dirname: %s", __dirname)
 
@@ -259,7 +259,7 @@ function upload(req, res) {
         res.end('bad request: excepting multipart/form-data')
         return
     }
-    var form = new formidable.IncomingForm()
+    var form = ''//new formidable.IncomingForm()
     form.parse(req)
     form.on('field', function (field, value) {//收完输入域后发出的事件
         console.log('on field')

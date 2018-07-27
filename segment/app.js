@@ -4,11 +4,17 @@ var getStackTrace = function () {
     return obj.stack;
 };
 var log = console.log;
-console.log = function() {
-    var stack = getStackTrace()
-    var line = stack.match(/\(.*?\)/g)[1]
-    arguments[0] = arguments[0] + '-------' + line.replace("(", "").replace(")", "")
-    log.apply(console, arguments)
+console.log = function () {
+  var stack = getStackTrace() || ""
+  var matchResult = stack.match(/\(.*?\)/g) || []
+  var line = matchResult[1] || ""
+  for (var i in arguments) {
+  }
+  if (typeof arguments[i] == 'object') {
+    arguments[i] = JSON.stringify(arguments[i])
+  }
+  arguments[i] += '----' + line.replace("(", "").replace(")", "")
+  log.apply(console, arguments)
 };
 
 var createError = require('http-errors');
