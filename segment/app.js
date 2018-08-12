@@ -1,3 +1,5 @@
+//Most middleware (like favicon) is no longer bundled with Express and must be installed separately.
+// Please see https://github.com/senchalabs/connect#middleware.
 var getStackTrace = function () {
     var obj = {};
     Error.captureStackTrace(obj, getStackTrace);
