@@ -178,13 +178,13 @@ async function test() {
   console.log('inner data: ', data)
   return data
 }
-test()
-  .then(data => {
-    console.log('outer data:', data)
-  })
-  .catch(err => {
-    console.log('outer err:', err)
-  })
+// test()
+//   .then(data => {
+//     console.log('outer data:', data)
+//   })
+//   .catch(err => {
+//     console.log('outer err:', err)
+//   })
 
 var connect = require('connect')
 var app = new connect()
